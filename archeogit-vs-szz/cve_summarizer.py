@@ -1,28 +1,22 @@
-import yaml
 import requests
-from os import listdir
-from os.path import isfile, join, dirname, abspath
+from cve_intake import get_all_cves, get_data
 
 # Change this to the github repo of the vulnerabilties
 GITHUB_REPOSITORY = "https://github.com/apache/struts/"
 
-# Change this to the path of the cloned *-vulnerabilties cves folder
-CVES_DIR = dirname(r"C:\Users\Chres\Desktop\Development\Misc\struts-vulnerabilities\cves\\")
-
-
-def get_all_cves():
-    return [f for f in listdir(CVES_DIR) if isfile(join(CVES_DIR, f))]
-
-
-def get_fix_commits(cve):
-    fix_commits = []
-    for fix in cve["fixes"]:
-        fix_commits.append(fix["commit"])
-    return fix_commits
-
 
 def has_fix(cve):
-    return len(cve["fixes"]) > 0
+    for fix in cve["fixes"]:
+        if fix["commit"] is not None:
+            return True
+    return False
+
+
+def has_vcc(cve):
+    for vcc in cve["vccs"]:
+        if vcc["commit"] is not None:
+            return True
+    return False
 
 
 def invalid_fix_count(cve):
@@ -52,12 +46,7 @@ def invalid_vcc_count(cve):
 
 
 def has_both_vcc_and_fix(cve):
-    return len(cve["fixes"]) > 0 and len(cve["vccs"]) > 0
-
-
-def get_data(cve_filename):
-    with open(CVES_DIR + "/" + cve_filename) as f:
-        return yaml.safe_load(f)
+    return has_fix(cve) and has_vcc(cve)
 
 
 def build_summary():
