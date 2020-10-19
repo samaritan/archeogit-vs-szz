@@ -1,1 +1,2 @@
+pytest~=6.1
 PyYaml~=5.3.1
