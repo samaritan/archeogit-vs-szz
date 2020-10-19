@@ -1,0 +1,19 @@
+logging:
+  version: 1
+  disable_existing_loggers: False
+  formatters:
+    simple:
+      format: '%(asctime)s - %(name)s - %(process)d - %(levelname)s - %(message)s'
+  handlers:
+    console:
+      class: logging.StreamHandler
+      level: DEBUG
+      formatter: simple
+  loggers:
+    archeogitvsszz:
+      level: DEBUG
+      handlers: [console]
+      propagate: false
+  root:
+    level: ERROR
+    handlers: [console]
