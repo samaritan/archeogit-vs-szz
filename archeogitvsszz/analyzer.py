@@ -10,4 +10,5 @@ class Analyzer:
         self._szz = szz
 
     def analyze(self):
-        pass
+        # for one commit
+        self._szz.blame("85812fb9bbf1dc8358d0352157142ec3131e015b")

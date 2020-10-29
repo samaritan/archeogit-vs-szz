@@ -175,4 +175,8 @@ tags
 pyvenv.cfg
 pip-selfcheck.json
 
+# IDEA
+/.idea
+
+
 # End of https://www.toptal.com/developers/gitignore/api/python,virtualenv,vim
