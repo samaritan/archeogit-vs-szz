@@ -3,10 +3,14 @@ import subprocess
 import os
 import json
 import shutil
+import tempfile
+
 
 from . import base
 
 logger = logging.getLogger(__name__)
+szz_dir = os.path.abspath("szz_find_bug_introducers-0.1.jar")
+root_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 class SZZ(base.BaseBlamer):
@@ -23,24 +27,25 @@ class SZZ(base.BaseBlamer):
             }
         }
 
-        with open('issue_list.json', 'a') as file:
-            json.dump(issues_list_dict, file)
+        with tempfile.TemporaryDirectory() as temp_path:
+            os.chdir(temp_path)
 
-        result = subprocess.run(['java', '-jar', 'szz_find_bug_introducers-0.1.jar', '-i', 'issue_list.json', '-r', str(self._repository.path)],
-                                stdout=subprocess.PIPE)
+            with open('issue_list.json', 'a') as file:
+                json.dump(issues_list_dict, file)
 
-        with open('results/result0/fix_and_introducers_pairs.json') as json_file:
-            data = json.load(json_file)
+            result = subprocess.Popen(['java', '-jar', szz_dir, '-i', 'issue_list.json', '-r', str(self._repository.path)],
+                                    stdout=subprocess.PIPE)
+            result.wait()
+
+            with open('results/result0/fix_and_introducers_pairs.json') as json_file:
+                data = json.load(json_file)
+
+            os.chdir(root_dir)
 
         contributors = self.get_contributors(data)
 
         print("Contributors: ")
         print(contributors)
-
-        self.remove_files()
-
-        result.stdout.decode('utf-8')
-
         return contributors
 
     def get_contributors(self, pairs):

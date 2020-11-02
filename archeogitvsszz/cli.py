@@ -14,12 +14,12 @@ class CLI:
         )
         self._parser.add_argument(
             'repository', type=pathlib.Path,
-            help='Path to the local clone of the git repository containing '
+            help='Absolute path to the local clone of the git repository containing '
             'the source code of the project being analyzed.'
         )
         self._parser.add_argument(
             'vulnerabilities', type=pathlib.Path,
-            help='Path to the local clone of the git repository containing '
+            help='Absolute path to the local clone of the git repository containing '
             'the vulnerabilities in the project being analyzed curated by the '
             'Vulnerability History Project.'
         )
