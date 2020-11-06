@@ -46,16 +46,19 @@ class SZZ(base.BaseBlamer):
 
         print("Contributors: ")
         print(contributors)
+        print(len(contributors))
         return contributors
 
-    def get_contributors(self, pairs):
+    @staticmethod
+    def get_contributors(pairs):
         contributors = []
         for pair in pairs:
             if pair[1] not in contributors:
                 contributors.append(pair[1])
         return contributors
 
-    def remove_files(self):
+    @staticmethod
+    def remove_files():
         os.remove('issue_list.json')
         shutil.rmtree("results")
         shutil.rmtree("issues")
