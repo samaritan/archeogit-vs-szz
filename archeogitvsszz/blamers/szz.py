@@ -15,17 +15,19 @@ root_dir = os.path.dirname(os.path.abspath(__file__))
 
 class SZZ(base.BaseBlamer):
 
-    def blame(self, sha):
+    def blame(self, shas):
 
         # values for root key and dates are irrelevant, but need to be correctly formatted
-        issues_list_dict = {
-            "JENKINS-48080": {
+        issues_list_dict = {}
+        for sha in shas:
+            issues_list_dict[sha] = {
                 "commitdate": "2021-07-1 00:37:08 +0100",
                 "creationdate": "2021-12-03 20:08:14 +0000",
                 "hash": sha,
                 "resolutiondate": "2021-12-03 20:08:14 +0000"
             }
-        }
+
+        print(issues_list_dict)
 
         with tempfile.TemporaryDirectory() as temp_path:
             os.chdir(temp_path)
@@ -37,7 +39,7 @@ class SZZ(base.BaseBlamer):
                                     stdout=subprocess.PIPE)
             result.wait()
 
-            with open('results/result0/fix_and_introducers_pairs.json') as json_file:
+            with open('results/fix_and_introducers_pairs.json') as json_file:
                 data = json.load(json_file)
 
             os.chdir(root_dir)
@@ -46,15 +48,14 @@ class SZZ(base.BaseBlamer):
 
         print("Contributors: ")
         print(contributors)
-        print(len(contributors))
         return contributors
 
     @staticmethod
     def get_contributors(pairs):
-        contributors = []
+        contributors = set()
         for pair in pairs:
             if pair[1] not in contributors:
-                contributors.append(pair[1])
+                contributors.add(pair[1])
         return contributors
 
     @staticmethod
