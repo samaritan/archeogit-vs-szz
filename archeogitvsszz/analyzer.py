@@ -10,4 +10,4 @@ class Analyzer:
         self._szz = szz
 
     def analyze(self):
-        pass
+        self._archeogit.blame("85812fb9bbf1dc8358d0352157142ec3131e015b")

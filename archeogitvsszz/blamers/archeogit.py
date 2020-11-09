@@ -1,4 +1,5 @@
 import logging
+import os
 import subprocess
 import csv
 
@@ -9,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 class Archeogit(base.BaseBlamer):
     def blame(self, sha):
-        result = subprocess.run(['archeogit', 'blame', '--csv', str(self._repository.path), sha],
+        result = subprocess.run(['python3.7', 'archeogit', 'blame', '--csv', str(self._repository.path), sha],
                                 stdout=subprocess.PIPE)
 
         contributors = []
