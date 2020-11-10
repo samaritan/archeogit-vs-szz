@@ -23,3 +23,27 @@ class Vulnerabilities:
         onlyfiles = [f for f in listdir(self._cve_path) if isfile(join(str(self._cve_path), f))]
         print(onlyfiles)
         return onlyfiles
+
+    @staticmethod
+    def get_fix_commits(cve):
+        fix_commits = []
+        for fix in cve["fixes"]:
+            if fix["commit"] is not None:
+                fix_commits.append(fix["commit"])
+        return fix_commits
+
+    @staticmethod
+    def has_fix(cve):
+        for fix in cve["fixes"]:
+            if fix["commit"] is not None:
+                return True
+        return False
+
+    @staticmethod
+    def get_ground_truth(cve):
+        vcc_commits = set()
+        for fix in cve["vccs"]:
+            if fix["commit"] is not None:
+                vcc_commits.add(fix["commit"])
+        return vcc_commits
+

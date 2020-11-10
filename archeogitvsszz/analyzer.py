@@ -3,6 +3,7 @@ from archeogitvsszz import utilities
 from os.path import join
 from multiprocessing import Manager, Pool, Array
 from functools import partial
+import csv
 
 logger = logging.getLogger(__name__)
 
@@ -25,79 +26,36 @@ class Analyzer:
                         csv_entries=csv_entries)
         pool.map(func, self._vulnerabilities)
 
-
-
-        # do same with archeogit
+        # generate CSV
+        self.write_to_csv(csv_entries)
 
     def run_analysis(self, cve_file, szz_precisions, szz_recalls, csv_entries):
         cve = self.get_cve(cve_file)
-        fix_commits = self.get_fix_commits(cve)
-        ground_truth = self.get_ground_truth(cve)
+        fix_commits = self._vulnerabilities.get_fix_commits(cve)
+        ground_truth = self._vulnerabilities.get_ground_truth(cve)
 
         szz_contributors = self._szz.blame(fix_commits)
-        szz_precision = self.get_precision(szz_contributors, ground_truth)
-        szz_recall = self.get_recall(szz_contributors, ground_truth)
+        szz_results = utilities.Calculation.get_recall_and_precision(szz_contributors, ground_truth)
 
-        csv_entry = self.create_csv(fix_commits, ground_truth, szz_contributors, szz_precision, szz_recall)
+        # archeogit blame
+        archeogit_contributors = []
+
+        # archeogit recall, precision
+        archeogit_recall = []
+        archeogit_precision = []
+
+        csv_entry = self.create_csv(cve["CVE"], fix_commits, ground_truth, szz_contributors, szz_results[1], szz_results[0], archeogit_contributors, archeogit_precision, archeogit_recall)
         csv_entries.append(csv_entry)
 
-        print(csv_entry)
+    def create_csv(self, cve, fix_commits, ground_truth, szz_contributors, szz_precision, szz_recall, archeogit_contributors, archeogit_precision, archeogit_recall):
+        return [cve, str(fix_commits), list(ground_truth), list(szz_contributors), szz_precision, szz_recall, archeogit_contributors, archeogit_precision, archeogit_recall]
 
-    def create_csv(self, fix_commits, ground_truth, szz_contributors, szz_precision, szz_recall):
-        return [str(fix_commits), str(ground_truth), str(szz_contributors), szz_precision, szz_recall]
+    def write_to_csv(self, entries):
+        fields = ["cve", "fix_commits", "ground_truth", "szz_contributors", "szz_precision", "szz_recall", "archeogit_contributors", "archeogit_precision", "archeogit_recall"]
+        with open("data.csv", 'w', newline='') as csvfile:
+            csvwriter = csv.writer(csvfile)
+            csvwriter.writerow(fields)
+            csvwriter.writerows(entries)
 
     def get_cve(self, cve_file):
         return utilities.YAML.read(join(self._vulnerabilities._cve_path, cve_file))
-
-    @staticmethod
-    def get_fix_commits(cve):
-        fix_commits = []
-        for fix in cve["fixes"]:
-            if fix["commit"] is not None:
-                fix_commits.append(fix["commit"])
-        return fix_commits
-
-    @staticmethod
-    def has_fix(cve):
-        for fix in cve["fixes"]:
-            if fix["commit"] is not None:
-                return True
-        return False
-
-    @staticmethod
-    def get_ground_truth(cve):
-        vcc_commits = set()
-        for fix in cve["vccs"]:
-            if fix["commit"] is not None:
-                vcc_commits.add(fix["commit"])
-        return vcc_commits
-
-    @staticmethod
-    def get_recall(contributors, ground_truth):
-        true_positives = len(contributors & ground_truth)
-
-        false_negatives = 0
-        for contributor in ground_truth:
-            if contributor not in contributors:
-                false_negatives += 1
-
-        if true_positives + false_negatives == 0:
-            return 0.0
-
-        recall = true_positives / float(true_positives + false_negatives)
-        return recall
-
-    @staticmethod
-    def get_precision(contributors, ground_truth):
-        true_positives = len(contributors & ground_truth)
-
-        false_positives = 0
-        for contributor in contributors:
-            if contributor not in ground_truth:
-                false_positives += 1
-
-        if true_positives + false_positives == 0:
-            return 0.0
-
-        precision = true_positives / float(true_positives + false_positives)
-        return precision
