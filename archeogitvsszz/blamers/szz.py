@@ -22,7 +22,7 @@ class SZZ(base.BaseBlamer):
         for sha in shas:
             issues_list_dict[sha] = {
                 "commitdate": "2021-07-1 00:37:08 +0100",
-                "creationdate": "2021-12-03 20:08:14 +0000",
+                "creationdate": "2021-07-1 00:00:00 +0000",
                 "hash": sha,
                 "resolutiondate": "2021-12-03 20:08:14 +0000"
             }
@@ -58,10 +58,5 @@ class SZZ(base.BaseBlamer):
                 contributors.add(pair[1])
         return contributors
 
-    @staticmethod
-    def remove_files():
-        os.remove('issue_list.json')
-        shutil.rmtree("results")
-        shutil.rmtree("issues")
 
 
