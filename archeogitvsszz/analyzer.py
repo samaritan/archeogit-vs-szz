@@ -27,9 +27,10 @@ class Analyzer:
         vulnerability = self._vulnerabilities.get(cve_file)
 
         szz_contributors = szz.blame(vulnerability.fixes)
-        szz_results = utilities.Calculation.get_recall_and_precision(
-            szz_contributors, vulnerability.contributors
-        )
+        szz_recall, szz_precision = \
+            utilities.Calculation.get_recall_and_precision(
+                szz_contributors, vulnerability.contributors
+            )
 
         # archeogit blame
         archeogit_contributors = []
@@ -38,10 +39,14 @@ class Analyzer:
         archeogit_recall = []
         archeogit_precision = []
 
-        return self.create_csv(vulnerability.cve, vulnerability.fixes, vulnerability.contributors, szz_contributors, szz_results[1], szz_results[0], archeogit_contributors, archeogit_precision, archeogit_recall)
-
-    def create_csv(self, cve, fix_commits, ground_truth, szz_contributors, szz_precision, szz_recall, archeogit_contributors, archeogit_precision, archeogit_recall):
-        return [cve, str(fix_commits), list(ground_truth), list(szz_contributors), szz_precision, szz_recall, archeogit_contributors, archeogit_precision, archeogit_recall]
+        return (
+            vulnerability.cve,
+            ','.join(vulnerability.fixes),
+            ','.join(vulnerability.contributors),
+            ','.join(szz_contributors), szz_precision, szz_recall,
+            ','.join(archeogit_contributors), archeogit_precision,
+            archeogit_recall
+        )
 
     def write_to_csv(self, entries):
         fields = ["cve", "fix_commits", "ground_truth", "szz_contributors", "szz_precision", "szz_recall", "archeogit_contributors", "archeogit_precision", "archeogit_recall"]
