@@ -43,6 +43,3 @@ def test_get_recall_and_precision():
 
     assert actual_recall_and_precision == expected_recall_and_precision
 
-
-if __name__ == '__main__':
-    test_get_recall_and_precision()
