@@ -1,7 +1,7 @@
 import logging
 from archeogitvsszz import utilities
 from os.path import join
-from multiprocessing import Manager, Pool, Array
+from multiprocessing import Manager, Pool
 from functools import partial
 
 logger = logging.getLogger(__name__)
@@ -15,20 +15,17 @@ class Analyzer:
 
     def analyze(self):
         manager = Manager()
-        szz_precisions = manager.list()
-        szz_recalls = manager.list()
         csv_entries = manager.list()
 
         pool = Pool()
 
-        func = partial(self.run_analysis, szz_precisions=szz_precisions, szz_recalls=szz_recalls,
-                        csv_entries=csv_entries)
+        func = partial(self.run_analysis, csv_entries=csv_entries)
         pool.map(func, self._vulnerabilities)
 
         # generate CSV
         self.write_to_csv(csv_entries)
 
-    def run_analysis(self, cve_file, szz_precisions, szz_recalls, csv_entries):
+    def run_analysis(self, cve_file, csv_entries):
         cve = self.get_cve(cve_file)
         fix_commits = self._vulnerabilities.get_fix_commits(cve)
         ground_truth = self._vulnerabilities.get_ground_truth(cve)
