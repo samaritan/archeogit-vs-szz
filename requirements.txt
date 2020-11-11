@@ -1,3 +1,4 @@
+joblib~=0.17
 pytest~=6.1
 PyYaml~=5.3.1
 -e git+https://github.com/samaritan/archeogit.git@v0.2.0-alpha#egg=archeogit
