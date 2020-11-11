@@ -27,7 +27,7 @@ class SZZ(base.BaseBlamer):
                 "resolutiondate": "2021-12-03 20:08:14 +0000"
             }
 
-        print(issues_list_dict)
+        logger.debug(issues_list_dict)
 
         with tempfile.TemporaryDirectory() as temp_path:
             os.chdir(temp_path)
@@ -46,8 +46,7 @@ class SZZ(base.BaseBlamer):
 
         contributors = self.get_contributors(data)
 
-        print("Contributors: ")
-        print(contributors)
+        logger.debug('Contributors %s', contributors)
         return contributors
 
     @staticmethod

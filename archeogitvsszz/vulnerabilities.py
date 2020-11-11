@@ -21,7 +21,7 @@ class Vulnerabilities:
 
     def get_all_file_names(self):
         onlyfiles = [f for f in listdir(self._cve_path) if isfile(join(str(self._cve_path), f))]
-        print(onlyfiles)
+        logger.debug(onlyfiles)
         return onlyfiles
 
     @staticmethod
