@@ -1,8 +1,16 @@
+import csv
 import logging
 
 import yaml
 
 logger = logging.getLogger(__name__)
+
+
+class CSV:
+    @staticmethod
+    def write(data, path):
+        with open(path, 'w', newline='') as file_:
+            csv.writer(file_).writerows(data)
 
 
 class YAML:
