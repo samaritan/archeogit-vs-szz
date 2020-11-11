@@ -3,14 +3,15 @@ from archeogitvsszz import utilities
 from multiprocessing import Manager, Pool
 from functools import partial
 
+from .blamers import Archeogit, SZZ
+
 logger = logging.getLogger(__name__)
 
 
 class Analyzer:
-    def __init__(self, vulnerabilities, archeogit, szz):
+    def __init__(self, vulnerabilities, repository):
         self._vulnerabilities = vulnerabilities
-        self._archeogit = archeogit
-        self._szz = szz
+        self._repository = repository
 
     def analyze(self):
         manager = Manager()
@@ -25,11 +26,12 @@ class Analyzer:
         self.write_to_csv(csv_entries)
 
     def run_analysis(self, cve_file, csv_entries):
+        archeogit, szz = Archeogit(self._repository), SZZ(self._repository)
         cve = self._vulnerabilities.get(cve_file)
         fix_commits = self._vulnerabilities.get_fix_commits(cve)
         ground_truth = self._vulnerabilities.get_ground_truth(cve)
 
-        szz_contributors = self._szz.blame(fix_commits)
+        szz_contributors = szz.blame(fix_commits)
         szz_results = utilities.Calculation.get_recall_and_precision(szz_contributors, ground_truth)
 
         # archeogit blame

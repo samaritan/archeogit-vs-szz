@@ -5,8 +5,7 @@ import time
 from logging.config import dictConfig
 
 from archeogitvsszz import utilities
-from archeogitvsszz import Analyzer, Archeogit, CLI, Repository, SZZ, \
-                           Vulnerabilities
+from archeogitvsszz import Analyzer, CLI, Repository, Vulnerabilities
 
 
 def _configure_logging(configuration):
@@ -25,10 +24,7 @@ if __name__ == '__main__':
     vulnerabilities = Vulnerabilities(arguments.vulnerabilities)
     all_files = vulnerabilities.get_all_file_names()
 
-    archeogit = Archeogit(repository)
-    szz = SZZ(repository)
-
-    analyzer = Analyzer(vulnerabilities, archeogit, szz)
+    analyzer = Analyzer(vulnerabilities, repository)
 
     start = time.time()
     analyzer.analyze()
