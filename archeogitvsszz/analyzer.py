@@ -1,6 +1,5 @@
 import logging
 from archeogitvsszz import utilities
-from os.path import join
 from multiprocessing import Manager, Pool
 from functools import partial
 
@@ -26,7 +25,7 @@ class Analyzer:
         self.write_to_csv(csv_entries)
 
     def run_analysis(self, cve_file, csv_entries):
-        cve = self.get_cve(cve_file)
+        cve = self._vulnerabilities.get(cve_file)
         fix_commits = self._vulnerabilities.get_fix_commits(cve)
         ground_truth = self._vulnerabilities.get_ground_truth(cve)
 
@@ -50,6 +49,3 @@ class Analyzer:
         fields = ["cve", "fix_commits", "ground_truth", "szz_contributors", "szz_precision", "szz_recall", "archeogit_contributors", "archeogit_precision", "archeogit_recall"]
         entries.insert(0, fields)
         utilities.CSV.write(entries, 'data.csv')
-
-    def get_cve(self, cve_file):
-        return utilities.YAML.read(join(self._vulnerabilities._cve_path, cve_file))
