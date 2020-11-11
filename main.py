@@ -13,7 +13,7 @@ def _configure_logging(configuration):
     dictConfig(configuration['logging'])
 
 
-def main():
+if __name__ == '__main__':
     cli = CLI()
     arguments = cli.get_arguments()
 
@@ -23,6 +23,7 @@ def main():
 
     repository = Repository(arguments.repository)
     vulnerabilities = Vulnerabilities(arguments.vulnerabilities)
+    all_files = vulnerabilities.get_all_file_names()
 
     archeogit = Archeogit(repository)
     szz = SZZ(repository)
@@ -33,7 +34,3 @@ def main():
     analyzer.analyze()
     elapsed = time.time() - start
     logger.info('Analysis took %.2f seconds', elapsed)
-
-
-if __name__ == '__main__':
-    main()

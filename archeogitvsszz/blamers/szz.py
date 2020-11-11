@@ -4,7 +4,6 @@ import os
 import json
 import tempfile
 
-
 from . import base
 
 logger = logging.getLogger(__name__)
