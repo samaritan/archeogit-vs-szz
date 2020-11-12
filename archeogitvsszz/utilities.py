@@ -8,9 +8,12 @@ logger = logging.getLogger(__name__)
 
 class CSV:
     @staticmethod
-    def write(data, path):
+    def write(data, path, header=None):
         with open(path, 'w', newline='') as file_:
-            csv.writer(file_).writerows(data)
+            writer = csv.writer(file_)
+            if header is not None:
+                writer.writerow(header)
+            writer.writerows(data)
 
 
 class YAML:

@@ -49,6 +49,9 @@ class Analyzer:
         )
 
     def write_to_csv(self, entries):
-        fields = ["cve", "fix_commits", "ground_truth", "szz_contributors", "szz_precision", "szz_recall", "archeogit_contributors", "archeogit_precision", "archeogit_recall"]
-        entries.insert(0, fields)
-        utilities.CSV.write(entries, 'data.csv')
+        header = [
+            "cve", "fix_commits", "ground_truth", "szz_contributors",
+            "szz_precision", "szz_recall", "archeogit_contributors",
+            "archeogit_precision", "archeogit_recall"
+        ]
+        utilities.CSV.write(entries, 'data.csv', header=header)
