@@ -17,15 +17,16 @@ class Analyzer:
         csv_entries = Parallel(n_jobs=-1)(
             self.run_analysis(v) for v in self._vulnerabilities
         )
-
-        # generate CSV
-        self.write_to_csv(csv_entries)
+        self.write_to_csv(filter(lambda i: i is not None, csv_entries))
 
     @delayed
     def run_analysis(self, cve_file):
-        archeogit, szz = Archeogit(self._repository), SZZ(self._repository)
         vulnerability = self._vulnerabilities.get(cve_file)
 
+        if not vulnerability.fixes:
+            return None
+
+        archeogit, szz = Archeogit(self._repository), SZZ(self._repository)
         szz_contributors = szz.blame(vulnerability.fixes)
         szz_recall, szz_precision = \
             utilities.Calculation.get_recall_and_precision(
