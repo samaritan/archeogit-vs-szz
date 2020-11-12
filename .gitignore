@@ -178,5 +178,10 @@ pip-selfcheck.json
 # IDEA
 /.idea
 
-
 # End of https://www.toptal.com/developers/gitignore/api/python,virtualenv,vim
+
+# Begin Custom Ignores
+
+output.csv
+
+# End Custom Ignores

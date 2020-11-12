@@ -27,6 +27,6 @@ if __name__ == '__main__':
     analyzer = Analyzer(vulnerabilities, repository)
 
     start = time.time()
-    analyzer.analyze()
+    analyzer.analyze(arguments.output_file)
     elapsed = time.time() - start
     logger.info('Analysis took %.2f seconds', elapsed)

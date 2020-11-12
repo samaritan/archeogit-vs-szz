@@ -13,6 +13,11 @@ class CLI:
             help='Path to the configuration file. Default is config.yml.'
         )
         self._parser.add_argument(
+            '--output-file', default='output.csv',
+            help='Path to the file to which the analysis output must be '
+            'written to. Default is output.csv'
+        )
+        self._parser.add_argument(
             'repository', type=pathlib.Path,
             help='Absolute path to the local clone of the git repository containing '
             'the source code of the project being analyzed.'

@@ -13,11 +13,17 @@ class Analyzer:
         self._vulnerabilities = vulnerabilities
         self._repository = repository
 
-    def analyze(self):
-        csv_entries = Parallel(n_jobs=-1)(
+    def analyze(self, path):
+        analysis = Parallel(n_jobs=-1)(
             self.run_analysis(v) for v in self._vulnerabilities
         )
-        self.write_to_csv(filter(lambda i: i is not None, csv_entries))
+        analysis = (filter(lambda i: i is not None, analysis))
+        header = [
+            "cve", "fix_commits", "ground_truth", "szz_contributors",
+            "szz_precision", "szz_recall", "archeogit_contributors",
+            "archeogit_precision", "archeogit_recall"
+        ]
+        utilities.CSV.write(analysis, path, header=header)
 
     @delayed
     def run_analysis(self, cve_file):
@@ -46,11 +52,3 @@ class Analyzer:
             ','.join(archeogit_contributors), archeogit_precision,
             archeogit_recall
         )
-
-    def write_to_csv(self, entries):
-        header = [
-            "cve", "fix_commits", "ground_truth", "szz_contributors",
-            "szz_precision", "szz_recall", "archeogit_contributors",
-            "archeogit_precision", "archeogit_recall"
-        ]
-        utilities.CSV.write(entries, 'data.csv', header=header)
