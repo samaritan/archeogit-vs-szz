@@ -2,9 +2,7 @@ import logging
 import subprocess
 import os
 import json
-import shutil
 import tempfile
-
 
 from . import base
 
