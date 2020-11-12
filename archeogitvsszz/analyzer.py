@@ -29,7 +29,7 @@ class Analyzer:
     def run_analysis(self, cve_file):
         vulnerability = self._vulnerabilities.get(cve_file)
 
-        if not vulnerability.fixes:
+        if not vulnerability.fixes or not vulnerability.contributors:
             return None
 
         archeogit, szz = Archeogit(self._repository), SZZ(self._repository)
