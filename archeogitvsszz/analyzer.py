@@ -32,9 +32,7 @@ class Analyzer:
             utilities.Calculation.get_recall_and_precision(
                 szz_contributors, vulnerability.contributors
             )
-        archeogit_contributors = set()
-        for fix in vulnerability.fixes:
-            archeogit_contributors |= set(archeogit.blame(fix))
+        archeogit_contributors = archeogit.blame(vulnerability.fixes)
         archeogit_recall, archeogit_precision = \
             utilities.Calculation.get_recall_and_precision(
                 archeogit_contributors, vulnerability.contributors

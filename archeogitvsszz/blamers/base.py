@@ -7,5 +7,5 @@ class BaseBlamer:
     def __init__(self, repository):
         self._repository = repository
 
-    def blame(self, sha):
+    def blame(self, shas):
         pass

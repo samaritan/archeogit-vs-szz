@@ -13,7 +13,13 @@ class Archeogit(base.BaseBlamer):
         super().__init__(repository)
         self._repository = Repository(str(self._repository.path))
 
-    def blame(self, sha):
+    def blame(self, shas):
+        contributors = set()
+        for sha in shas:
+            contributors |= self._blame(sha)
+        return contributors
+
+    def _blame(self, sha):
         commit = self._repository.get(sha)
         contributors = blame.blame(self._repository, commit)
-        return list({m.sha for c in contributors.values() for m in c})
+        return {m.sha for c in contributors.values() for m in c}
