@@ -18,6 +18,10 @@ class CLI:
             'written to. Default is output.csv'
         )
         self._parser.add_argument(
+            '--szz-depth', default='3',
+            help='Depth value to be passed into SZZUnleashed'
+        )
+        self._parser.add_argument(
             'repository', type=pathlib.Path,
             help='Absolute path to the local clone of the git repository containing '
             'the source code of the project being analyzed.'

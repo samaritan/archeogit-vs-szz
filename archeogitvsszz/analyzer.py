@@ -9,9 +9,10 @@ logger = logging.getLogger(__name__)
 
 
 class Analyzer:
-    def __init__(self, vulnerabilities, repository):
+    def __init__(self, vulnerabilities, repository, szz_depth):
         self._vulnerabilities = vulnerabilities
         self._repository = repository
+        self._szz_depth = szz_depth
 
     def analyze(self, path):
         analysis = Parallel(n_jobs=-1)(
@@ -32,7 +33,7 @@ class Analyzer:
         if not vulnerability.fixes or not vulnerability.contributors:
             return None
 
-        archeogit, szz = Archeogit(self._repository), SZZ(self._repository)
+        archeogit, szz = Archeogit(self._repository), SZZ(self._repository, self._szz_depth)
         szz_contributors = szz.blame(vulnerability.fixes)
         szz_recall, szz_precision = \
             utilities.Calculation.get_recall_and_precision(
