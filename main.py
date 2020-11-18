@@ -24,7 +24,7 @@ if __name__ == '__main__':
     vulnerabilities = Vulnerabilities(arguments.vulnerabilities)
     all_files = vulnerabilities.get_all_file_names()
 
-    analyzer = Analyzer(vulnerabilities, repository)
+    analyzer = Analyzer(vulnerabilities, repository, arguments.szz_depth)
 
     start = time.time()
     analyzer.analyze(arguments.output_file)

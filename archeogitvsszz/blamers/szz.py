@@ -5,6 +5,7 @@ import json
 import tempfile
 
 from . import base
+from archeogit.repository import Repository
 
 logger = logging.getLogger(__name__)
 szz_dir = os.path.abspath("szz_find_bug_introducers-0.1.jar")
@@ -12,9 +13,12 @@ root_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 class SZZ(base.BaseBlamer):
+    def __init__(self, repository, szz_depth):
+        super().__init__(repository)
+        self._repository = Repository(str(self._repository.path))
+        self._szz_depth = szz_depth
 
     def blame(self, shas):
-
         # values for root key and dates are irrelevant, but need to be correctly formatted
         issues_list_dict = {}
         for sha in shas:
@@ -33,7 +37,7 @@ class SZZ(base.BaseBlamer):
             with open('issue_list.json', 'a') as file:
                 json.dump(issues_list_dict, file)
 
-            result = subprocess.Popen(['java', '-jar', szz_dir, '-i', 'issue_list.json', '-r', str(self._repository.path)],
+            result = subprocess.Popen(['java', '-jar', szz_dir, '-i', 'issue_list.json', '-r', str(self._repository.path), "-d", self._szz_depth],
                                     stdout=subprocess.PIPE)
             result.wait()
 
