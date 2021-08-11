@@ -19,8 +19,13 @@ class CSV:
 class YAML:
     @staticmethod
     def read(path):
-        with open(path, 'r') as file_:
-            return yaml.safe_load(file_)
+        try:
+            with open(path, 'r') as file_:
+                return yaml.safe_load(file_)
+        except Exception as error:
+            logger.error('%s cannot be parsed', path)
+            logger.exception(error)
+        return None
 
 
 class Calculation:

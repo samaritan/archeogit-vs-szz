@@ -27,10 +27,12 @@ class Vulnerabilities:
             return {i['commit'] for i in data[key] if i['commit'] is not None}
 
         vulnerability = utilities.YAML.read(join(self._cve_path, cve_file))
-        cve = vulnerability['CVE']
-        fixes = _get_commits(vulnerability, 'fixes')
-        contributors = _get_commits(vulnerability, 'vccs')
-        return Vulnerability(cve=cve, fixes=fixes, contributors=contributors)
+        if vulnerability is not None:
+            cve = vulnerability['CVE']
+            fixes = _get_commits(vulnerability, 'fixes')
+            contributors = _get_commits(vulnerability, 'vccs')
+            return Vulnerability(cve=cve, fixes=fixes, contributors=contributors)
+        return None
 
     def get_all_file_names(self):
         onlyfiles = [f for f in listdir(self._cve_path) if isfile(join(str(self._cve_path), f))]
