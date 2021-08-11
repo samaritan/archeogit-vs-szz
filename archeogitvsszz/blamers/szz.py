@@ -38,7 +38,7 @@ class SZZ(base.BaseBlamer):
                 json.dump(issues_list_dict, file)
 
             result = subprocess.Popen(['java', '-jar', szz_dir, '-i', 'issue_list.json', '-r', str(self._repository.path), "-d", self._szz_depth],
-                                    stdout=subprocess.PIPE)
+                                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             result.wait()
 
             with open('results/fix_and_introducers_pairs.json') as json_file:
