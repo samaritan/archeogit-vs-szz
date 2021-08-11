@@ -24,6 +24,7 @@ class Analyzer:
             "szz_precision", "szz_recall", "archeogit_contributors",
             "archeogit_precision", "archeogit_recall"
         ]
+        analysis = sorted(analysis, key=lambda i: i[0])
         utilities.CSV.write(analysis, path, header=header)
 
     @delayed
