@@ -11,7 +11,7 @@ logging:
       formatter: simple
   loggers:
     archeogitvsszz:
-      level: DEBUG
+      level: ERROR
       handlers: [console]
       propagate: false
   root:
